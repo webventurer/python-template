@@ -1,115 +1,41 @@
-# Python Project Template
+## dotenvx
 
-You can use this repository as a template when creating a new repository on GitHub, to get my preferred setup for a Python project.
+This project lets you encrypt your environment variables so that you can check in your .env file as an encrypted .env.vault.
+This allows a strict separation of config from code as per "The Twelve-Factor App" [1].
 
-After creating the new project, there are a few things you'll need to configure.
+Install
 
-## Install brew (if you haven't already)
-
-```sh
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+brew install dotenvx/brew/dotenvx
 ```
 
-Or install using the .pkg installer from [here](https://github.com/Homebrew/brew/releases/).
+Make sure you've added your environment variables to `.env.prod` config file.
 
-[1] https://brew.sh
+Encrypt your .env.prod in one go
 
-## Install direnv
-
-Load/unload environment variables from your .envrc. In this case we use it to set the $PYTHONPATH without resorting to sys.path.insert hacks.
-
-```sh
-brew install direnv
+```
+cp .env.prod .env.vault
+dotenvx encrypt -f .env.vault
 ```
 
-[1] https://formulae.brew.sh/formula/direnv
+or
 
-## Rename the main package
-
-You'll need to rename the package from "mylib" to something sensible:
-
-```sh
-git mv mylib newname
-sed -i '' -e 's/mylib/newname/' tests/* .projections.json .github/workflows/python-app.yml .envrc pyproject.toml pyrightconfig.json
+```
+make env
 ```
 
-## Choosing the Python version
+Set your DOTENV_PRIVATE_KEY_VAULT key on github.com so that the key can be used to decrypt your environment vars.
 
-The version of Python that your project uses is needed by the GitHub Action that runs the tests, and perhaps by your local Python installation tool.
-
-You can create it like this:
-
-```sh
-echo 3.12.6 > .python-version
+```
+cd admin
+./set_github_secret.sh
 ```
 
-## Reviewing the license
+Note: If you use a cloud service like fly.io, make sure you set the DOTENV_PRIVATE_KEY_VAULT as a secret there too.
 
-The open source MIT license is used by default (see the `LICENSE` file). [Is it appropriate](https://choosealicense.com/) for this project?
+Learn more here
+https://github.com/dotenvx/dotenvx
 
-If it is, don't forget to set the year and the name of the copyright holder:
+Now you have your encrypted environment variables in both github.com and fly.io or anywhere you roll out the codebase to. No more secrets required.
 
-```sh
-sed -i '' -e "s,<YEAR>,$(date +%Y)," LICENSE
-FULL_NAME="$(getent passwd $USER | cut -d : -f 5 | cut -d , -f 1)"
-sed -i '' -e "s,<COPYRIGHT HOLDER>,$FULL_NAME," LICENSE
-```
-
-If you're on OS X use:
-
-```sh
-FULL_NAME="$(bin/osx/getent-passwd.sh $USER | cut -d : -f 5 | cut -d , -f 1)"
-```
-
-## Install packages
-
-You need to get everything installed, and that first test running. Start by creating a virtual environment:
-
-```sh
-python3 -m venv .venv
-source .venv/bin/activate
-```
-
-Now we can install our development tools:
-
-```sh
-pip install --upgrade pip
-pip install pip-tools
-make install
-```
-
-As you add new development or production dependencies (or both), you can run this command to install them:
-
-```sh
-make update
-```
-
-## Run a linter & format your code on check in
-
-Ruff is a standalone package which runs a linter and a formatter over your code, replacing the need for Black, isort or flake8. Althoug you can add the Ruff extension to your VSCode (editor), you can also add it to your .pre-commit-config.yaml to check your code on a git commit.
-
-```sh
-pre-commit install
-```
-
-## VS Code plugins
-
-Make sure you install
-
-- ruff
-- pylance
-
-Note: Pylance incorporates the Pyright type checker so you only need to install Pylance. When Pylance is installed, the Pyright extension will disable itself.
-
-## VIM plugins
-
-The .projections.json is config for Vim projectionist plugin [1].
-
-This config makes it easy to switch between "alternate" files in the Vim
-editor; you can easily jump between a Python module and its test file.
-
-[1] https://github.com/tpope/vim-projectionist.
-
-## Update the README
-
-Now delete all the docs that you've just followed, and write something suitable for your new project!
+[1] https://12factor.net/config

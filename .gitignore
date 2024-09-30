@@ -136,12 +136,18 @@ celerybeat.pid
 
 # Environments
 .env
+.env.prod
+.env.keys
 .venv
 env/
 venv/
 ENV/
 env.bak/
 venv.bak/
+
+# Do not ignore .env.vault
+!.env.vault
+!.env.example
 
 # Do not ignore .envrc
 !.envrc
