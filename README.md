@@ -110,6 +110,43 @@ editor; you can easily jump between a Python module and its test file.
 
 [1] https://github.com/tpope/vim-projectionist.
 
+## dotenvx
+
+This project lets you encrypt your environment variables so that you can check in your .env file as a .env.vault.
+
+Install
+
+```
+brew install dotenvx/brew/dotenvx
+```
+
+Make sure you've put your environment variables into `.env.ci` and `.env.prod`.
+
+Encrypt your .env.ci in one go
+
+```
+cp .env.ci .env.vault
+dotenvx encrypt -f .env.vault
+```
+
+or
+
+```
+make env
+```
+
+Set your `DOTENV_PRIVATE_KEY_VAULT` key on github.com so that the key can be used to decrypt your environment vars.
+
+```
+cd admin
+./set_github_secret.sh
+```
+
+Learn more here
+https://github.com/dotenvx/dotenvx
+
+Now you have your encrypted environment variables in both github.com and fly.io.
+
 ## Update the README
 
 Now delete all the docs that you've just followed, and write something suitable for your new project!
