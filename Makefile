@@ -30,3 +30,10 @@ types:
 
 test:
 	sh -c 'pytest tests || ([ $$? = 5 ] && exit 0 || exit $$?)'
+
+env:
+	cp .env.prod .env.vault
+	dotenvx encrypt -f .env.vault
+
+env-test:
+	dotenvx run --env-file .env.vault -- python check_env.py
