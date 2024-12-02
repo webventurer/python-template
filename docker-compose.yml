@@ -1,0 +1,25 @@
+services:
+  mylib:
+    image: mylib
+    container_name: mylib
+    hostname: ${HOSTNAME}
+    build:
+      context: .
+      dockerfile: ./mylib/Dockerfile
+    ports:
+      - "80"
+    volumes:
+      - "/home/app/cache:/app/cache"
+      - "/home/app/logs:/app/logs"
+    networks:
+      elk:
+        ipv4_address: 172.21.0.4
+
+networks:
+  elk:
+    name: wt-elk
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.21.0.0/24

@@ -1,3 +1,21 @@
+# Environments
+.env
+.env.ci
+.env.prod
+.env.keys
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+
+# Do not ignore .env.vault
+!.env.vault
+!.env.example
+
+
 # Code
 .vscode/*
 !.vscode/tasks.json
