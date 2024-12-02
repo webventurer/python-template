@@ -1,0 +1,9 @@
+services:
+  mylib:
+    ports:
+      - "80:80"
+      - "8000:8000"
+      - "8001:8001"
+    volumes:
+      - "~/app/cache:/app/cache"
+      - "~/app/logs:/app/logs"

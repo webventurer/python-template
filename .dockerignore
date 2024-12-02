@@ -1,0 +1,5 @@
+.dockerignore
+.git
+.bash_history
+.python_history
+.envrc
