@@ -110,6 +110,68 @@ editor; you can easily jump between a Python module and its test file.
 
 [1] https://github.com/tpope/vim-projectionist.
 
+## Deploy project to fly.io via Docker
+
+This commit helps you roll out your app to fly.io. We've added in some additional features like:
+
+- Ability to add 'thirdparty' apps to the repo.
+- Use of Nginx to switch between multiple apps.
+
+It's easy to strip out these extra features if they're not needed.
+
+### Create a FLY_API_TOKEN and add to GitHub
+
+`fly tokens create deploy -x 999999h`
+
+Now add this to GitHub settings of your repository as a new secret called FLY_API_TOKEN.
+
+Check the token is on GitHub:
+
+`gh secret list`
+
+### Add DOTENV_PRIVATE_KEY_VAULT secret to fly.io
+
+You'll need this private env variable to decrypt the env variables in .env.vault:
+
+`flyctl secrets set DOTENV_PRIVATE_KEY_VAULT=your_private_key`
+
+### Use PYTHONPATH in Dockerfile
+
+Make sure .envrc is not in your repo as you only need this for your dev box. You can set the PYTHONPATH in your Dockerfile.
+
+### Add of 'thirdparty' directory
+
+Sometimes a module stops being developed. In which case you need to download the latest working copy and add it to your 'thirdparty' directory. You can then access that directory from the Makefile to install/uninstall the modules from inside your app.
+
+This is especially useful if you need to make changes to the apps to get them working with updates to later versions of Python.
+
+### Custom domain
+
+Go to your DNS e.g. Amazon Route 53 and add a CNAME entry as per [1].
+Point your CNAME record from your `subdomain.website.com` or `website.com` to `yourapp.fly.dev` with a TTL 600.
+
+[1] https://fly.io/docs/networking/custom-domain/
+
+### Check DNS propagation
+
+Flush your DNS on your Mac with:
+
+`sudo killall -HUP mDNSResponder`
+
+Check propagration around the world with https://whatsmydns.net.
+
+whatsmydns.net lets you instantly perform a DNS lookup to check a domain name's current IP address and DNS record information against multiple nameservers located in different parts of the world.
+
+### Add in dotenvx
+
+We've included relevant sections from dotenvx because DOTENV_PRIVATE_KEY_VAULT is needed for `flyctl deploy`.
+
+Note: The rest of the detail is in the 'dotenvx' Git branch.
+
+### A note on Nginx
+
+If you have multiple apps on different ports you can use Nginx as a reverse proxy to switc h between them. Define the routes in your nginx.conf. Or strip out all the Nginx config out if you don't need it.
+
 ## Update the README
 
 Now delete all the docs that you've just followed, and write something suitable for your new project!
