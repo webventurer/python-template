@@ -37,6 +37,7 @@ To pull in template updates later, run `git fetch template && git merge template
 ### Run setup
 
 ```sh
+direnv allow
 ./scripts/setup.sh
 ```
 
@@ -49,9 +50,14 @@ The script will:
 5. Create a virtual environment and install dependencies
 6. Install pre-commit hooks
 
-After setup, run `direnv allow` to activate the environment and `./test` to verify everything works.
+After setup:
+
+1. Run `./test` to verify everything works
+2. Commit the renamed files: `git add -A && git commit -m "chore: initialise from template"`
 
 Then replace this README with content for your new project.
+
+> **Note:** VS Code may show an error for `python.defaultInterpreterPath` pointing to `.venv/bin/python` when you first open the project, because `.venv` doesn't exist until after setup runs. The warning goes away once `./scripts/setup.sh` has completed.
 
 ## Package naming convention
 
