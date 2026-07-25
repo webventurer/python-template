@@ -5,7 +5,7 @@ set -euo pipefail
 # Setup script for python-template
 #
 # Automates every step in README.md:
-#   1. Check prerequisites (direnv, python3)
+#   1. Check prerequisites (direnv, python3) and that origin is your own repo
 #   2. Gather user input (package name, Python version, license)
 #   3. Rename package directory to match project name
 #   4. Set Python version (install via pyenv if available)
@@ -34,6 +34,27 @@ check_command() {
     command -v "$1" > /dev/null 2>&1 || bail "$1 is not installed. $2"
 }
 
+check_origin_repointed() {
+    case "$(git remote get-url origin 2>/dev/null || true)" in
+        *webventurer/python-template*) bail "$(unrepointed_origin_help)" ;;
+    esac
+}
+
+unrepointed_origin_help() {
+    cat <<'EOF'
+origin still points at the template repository.
+
+Setting up here would leave your new project pushing its commits to
+python-template. Create your own repository first:
+
+    gh repo create <owner>/<name> --private
+    git remote set-url origin git@github.com:<owner>/<name>.git
+
+Or start again with "Use this template" on GitHub, which gives you a
+repository of your own with a clean history.
+EOF
+}
+
 prompt_with_default() {
     local prompt="$1" default="$2" answer
     printf "%s [%s]: " "$prompt" "$default" >&2
@@ -48,6 +69,8 @@ bold "Checking prerequisites..."
 check_command direnv  "Run: brew install direnv (macOS) or sudo apt install direnv (Ubuntu/Debian)"
 check_command python3 "Install Python 3 first"
 check_command git     "Install git first"
+
+check_origin_repointed
 
 if [ ! -d "mylib" ]; then
     bail "mylib/ directory not found — has setup already been run?"
